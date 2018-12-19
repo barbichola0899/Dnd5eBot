@@ -5,6 +5,8 @@ import asyncio
 import time
 import random
 
+token = "NTI0OTY3MDE3NzgzMDk5NDEy.Dvv17g.BxXD5GhVA1eTSxIhuKLD1cFmrgU"
+userID  = 243038734583463936
 
 Client = discord.Client() #Initialise Client 
 client = commands.Bot(command_prefix = "?") #Initialise client bot
@@ -53,5 +55,4 @@ async def on_message(message):
         else:
             await client.send_message(message.channel," ``` %s = %i. %s```"  %(dice,s,rolls))
 
-client.run("NTI0OTY3MDE3NzgzMDk5NDEy.Dvv17g.BxXD5GhVA1eTSxIhuKLD1cFmrgU") #Replace token with your bots token
- #userid  = 243038734583463936
+client.run(token) #Replace token with your bots token

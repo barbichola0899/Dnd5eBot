@@ -6,11 +6,11 @@ import asyncio
 import time
 import random
 
-# token of the bot and ID of the admin(change to you ID)
-token = "NTI0OTY3MDE3NzgzMDk5NDEy.Dvv17g.BxXD5GhVA1eTSxIhuKLD1cFmrgU"
 
 #GLOBAL VARIABLES
-adminID = 243038734583463936 
+# token of the bot and ID of the admin(change to you ID)
+token = "NTI0OTY3MDE3NzgzMDk5NDEy.Dvv17g.BxXD5GhVA1eTSxIhuKLD1cFmrgU"
+adminID = <yourID>(no brackets)
 dmID = 0
 data = []
 data.append(dmID)
@@ -27,8 +27,6 @@ def GetData(id, data):
             return data.index(info)
 
 
-
-
 @client.event
 async def on_ready():
     await client.change_presence(game=discord.Game(name='-help'))
@@ -38,7 +36,6 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-
 
     
     # HELP GUIDE
@@ -499,7 +496,5 @@ async def on_message(message):
         else: 
             
             await client.send_message(message.channel, "```DM has not been selected, please type -dm + user id```")
-
-
 
 client.run(token)

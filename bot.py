@@ -97,7 +97,7 @@ async def on_message(message):
         death_roll_succes = 0  # save the amount of succesfull death saves
         data.append(death_roll_fail)
         data.append(death_roll_succes)
-        money = int(argss[10])
+        money = int(args[10])
         data.append(money)
         print(data)
     # ROLLS
@@ -431,7 +431,14 @@ async def on_message(message):
         await client.send_message(message.author, "```HP: %i \nHit dices left: %i```"%(hp,qtd_hd))
     
     if message.content.lower().startswith('-sm'):#spend money
-        await client.send_message(message.author, "```Remember, ``"%(hp,qtd_hd))
+        money_before = data[GetData(userID, data)+17]#Current amount of money
+        money_after = money_before
+        args = message.content.lower().split(' ')
+        spent = int(args[1])#Amount that will be spent
+        money_after -= spent
+        data[GetData(userID, data)+17] = money_after
+
+        await client.send_message(message.author, "```You had %i, spent %i now you have %i``"%(money_before,spent, money_after))
 
 
 

@@ -11,6 +11,6 @@ install asyncio package
 
 ```pip install asyncio``` 
 
-Now you have to get your ID to set as admin. Press ````\@your username``` in discord server chat and save the number that will be provided. Go to line 9 and put your ID. 
+Now you have to get your ID to set as admin. Press \@<your username>(no brackets) in discord server chat and save the number that will be provided. Go to line 9 and put your ID. 
 
 Ok, that's It!

@@ -1,13 +1,19 @@
+#IMPORTS
 import discord
 from discord.ext.commands import Bot
 from discord.ext import commands
 import asyncio
 import time
 import random
-# token of the bot and ID of the admin(change for your ID)
-token = "NTI0OTY3MDE3NzgzMDk5NDEy.Dvv17g.BxXD5GhVA1eTSxIhuKLD1cFmrgU"
-adminID = 243038734583463936
 
+# token of the bot and ID of the admin(change to you ID)
+token = "NTI0OTY3MDE3NzgzMDk5NDEy.Dvv17g.BxXD5GhVA1eTSxIhuKLD1cFmrgU"
+
+#GLOBAL VARIABLES
+adminID = 243038734583463936 
+dmID = 0
+data = []
+data.append(dmID)
 
 Client = discord.Client()  # Initialise Client
 client = commands.Bot(command_prefix="?")  # Initialise client bot
@@ -21,7 +27,6 @@ def GetData(id, data):
             return data.index(info)
 
 
-data = []
 
 
 @client.event
@@ -38,7 +43,7 @@ async def on_message(message):
     
     # HELP GUIDE
     if message.content.lower().startswith('-help'):  # set help event
-        await client.send_message(message.channel, "```Quick Guide To DnD 5e Dice Roller \n\nSetting data(remember to use only backspace, no comma or hifen): -sd \nFormat[level] [attribute modifier for meelee attacks] [attribute modifier for meelee attacks] [meelee weapon damage roll] [range weapon damage roll] [attribute modifier for spell attacks] [max hp] [hit dice(only the size)] [constitution mod] [money(in cp)]\nE.g.: \n-sd 1 4 3 6 0 3 20 6 2  \n\nRandom Rolls: \n-sr to simple roll \n-ar to advantage roll \n-dr to disavantage roll \nExemple: \n-ra 2d6+3 = 10 [1,4,3,2] \n\nSpecific Rolls(need data to be setted): n-ma to Meelee Attack Rolls \n-ra to Ranged Attack Rolls \n-sa to Spell Attack Rolls \n-md to Meelee Damage Rolls\n-rd to Ranged Damage Roll \n-hd(+ backspace + amount of dices used) to Hit Dice roll \nds-to death save \n\nOther Features: \n-hit ro decrase HP \n-lr to long rest \n-ul to upgrade level \n -ss to show current stats to player \n-sm to spend Money(always in CP) \n\nAdmin Features: \n\n-dm to set DM \n-sd to sholl data of all players to DM```")
+        await client.send_message(message.channel, "```Quick Guide To DnD 5e Dice Roller \n\nSetting data(remember to use only backspace, no comma or hifen): -sd \nFormat[level] [attribute modifier for meelee attacks] [attribute modifier for meelee attacks] [meelee weapon damage roll] [range weapon damage roll] [attribute modifier for spell attacks] [max hp] [hit dice(only the size)] [constitution mod] [money(in cp)] \nE.g.: \n-sd 1 4 3 6 0 3 20 6 2 100  \n\nRandom Rolls: \n-sr to simple roll \n-ar to advantage roll \n-dr to disavantage roll \nExemple: \n-ra 2d6+3 = 10 [1,4,3,2] \n\nSpecific Rolls(need data to be setted): n-ma to Meelee Attack Rolls \n-ra to Ranged Attack Rolls \n-sa to Spell Attack Rolls \n-md to Meelee Damage Rolls\n-rd to Ranged Damage Roll \n-hd [amount used] to Hit Dice roll \nds-to death save \n\nOther Features: \n-hit ro decrase HP \n-lr to long rest \n-ul to upgrade level \n -ss to show current stats to player \n-sm to spend Money(always in CP. Remember: 1PP = 10 GP = 20 EP = 100SP = 1000CP) \n\nAdmin Features: \n\n-dm <ID> to set DM \n-si to show all info of each players (privatly)to DM```")
 
     # SETS
 
@@ -431,6 +436,7 @@ async def on_message(message):
         await client.send_message(message.author, "```HP: %i \nHit dices left: %i```"%(hp,qtd_hd))
     
     if message.content.lower().startswith('-sm'):#spend money
+        userID = message.author.id
         money_before = data[GetData(userID, data)+17]#Current amount of money
         money_after = money_before
         args = message.content.lower().split(' ')
@@ -438,12 +444,62 @@ async def on_message(message):
         money_after -= spent
         data[GetData(userID, data)+17] = money_after
 
-        await client.send_message(message.author, "```You had %i, spent %i now you have %i``"%(money_before,spent, money_after))
-
-
+        await client.send_message(message.channel, "```You had %i, spent %i now you have %i``"%(money_before,spent, money_after))
+    
 
     # ADMIN FEATURES
-    if message.content.lower().startswith('-sd'):
-        a = 2
+
+    if message.content.lower().startswith('-dm'):
+        args = message.content.lower().split(' ')
+        userID = message.author.id
+        userID = int(userID)
+        dmID = int(args[1])
+        data[0] = dmID
+        if userID != adminID:
+            await client.send_message(message.channel, "```YOU SHALL NOT PASS```")
+        else: 
+            dmID_string = '<@' + str(dmID)+'>'
+    
+            await client.send_message(message.channel, "Congratulations %s ! You are the Dungeon Master. Shall the blood spill over your dices!"%(dmID_string))
+    if message.content.lower().startswith('-si'):
+        
+        if data[0] != 0:
+            userID = message.author.id
+            userID = int(userID)
+            if userID != data[0]:
+                await client.send_message(message.channel, "```'A master cannot be mistaken for his students'-Someone Somewhere Somewhen```")
+            else:
+                await client.send_message(message.author, "DM. The stats are: ")
+                i =  1 #just to help in the iteration, the element data[0] is the dm user
+                print(data)
+                while i < len(data) - 1: #Get groups of 18 elements for each player
+                    print("oi")
+                    user = data[i]
+                    user = '<@'+str(user)+'>' 
+                    level = data[i+1]
+                    prof = data[i+2]
+                    m_mod= data[i+3]
+                    r_mod = data[i+4]
+                    m_d = data[i+5]
+                    r_d = data[i+6]
+                    s_m = data[i+7]
+                    s_s= data[i+8]
+                    hp_m = data[i+9]
+                    hp = data[i+10]
+                    qtd_hd_m = data[i+11]
+                    qtd_hd = data[i+12]
+                    hd = data[i+13]
+                    dr_fail = data[i+15]
+                    dr_suc = data[i+16]
+                    mon =  data[i+17]
+
+                    await client.send_message(message.author, "Player: %s. \nLevel: %i, Proficiency: %i, Meelee Mod: %i, Meelee Damage: %i, Ranged Mod: %i, Ranged Damage: %i, Spell Mod: %i,Spell Save: %i, HP Max: %i, Current HP: %i, Max Hit dices: %i, Current Hit dices: %i, Money: %i \n"%(user,level,prof,m_mod,m_d,r_mod,r_d,s_m,s_s,hp_m,hp,qtd_hd_m,qtd_hd,mon))
+                
+                    i += 18
+        else: 
+            
+            await client.send_message(message.channel, "```DM has not been selected, please type -dm + user id```")
+
+
 
 client.run(token)

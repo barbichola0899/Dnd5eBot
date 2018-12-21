@@ -31,7 +31,6 @@ def GetData(id, data):
 async def on_ready():
     await client.change_presence(game=discord.Game(name='-help'))
     # This will be called when the bot connects to the server
-    print("Bot is online and connected to Discord")
 
 
 @client.event
@@ -101,7 +100,6 @@ async def on_message(message):
         data.append(death_roll_succes)
         money = int(args[10])
         data.append(money)
-        print(data)
     # ROLLS
     if message.content.lower().startswith('-ar'):  # set advantage roll event
 
@@ -139,17 +137,12 @@ async def on_message(message):
         for i in range(len(rolls)):  # clone to analyse get the highest amounts
             rolls_clone.append(rolls[i])
 
-        print(rolls, rolls_clone)
         for i in range(int(qtd/2)):
             higher = max(rolls_clone)
-            print(higher)
             rolls_clone.remove(higher)
-            print(rolls_clone)
             sum += higher
 
-        print(sum)
 
-        print(rolls, rolls_clone)
 
         rolls = str(rolls)
 
@@ -194,17 +187,12 @@ async def on_message(message):
         for i in range(len(rolls)):  # clone to analyse get the lowest amounts
             rolls_clone.append(rolls[i])
 
-        print(rolls, rolls_clone)
         for i in range(int(qtd/2)):
             lower = min(rolls_clone)
-            print(lower)
             rolls_clone.remove(lower)
-            print(rolls_clone)
             sum += lower
 
-        print(sum)
 
-        print(rolls, rolls_clone)
 
         rolls = str(rolls)
 
@@ -301,7 +289,6 @@ async def on_message(message):
     if message.content.lower().startswith('-sa'):  # spell attack roll
         if data:
             roll = random.randint(1, 20)
-            print(data)
             userID = message.author.id
             prof = data[GetData(userID, data)+2]
             mod = data[GetData(userID, data)+7]
@@ -319,11 +306,11 @@ async def on_message(message):
             if amount > qtd_hd: #avoid of using more hit dices than the amount available
                 amount = qtd_hd
 
-            qtd_hd = int(data[GetData(userID, data)+12])
-            hit_dice = int(data[GetData(userID, data)+13])
+            qtd_hd = data[GetData(userID, data)+12])
+            hit_dice = data[GetData(userID, data)+13])
             hp = 10
-            hp_max = int(data[GetData(userID, data)+9])
-            con = int(data[GetData(userID, data)+14])
+            hp_max = data[GetData(userID, data)+9])
+            con = data[GetData(userID, data)+14])
             s = 0
             hd_rolls = []
             for i in range(amount):
@@ -343,7 +330,6 @@ async def on_message(message):
                     data[GetData(userID, data)+7] = hp
             
             hd_rolls = str(hd_rolls)
-            print(hp)
             await client.send_message(message.channel, "```%id%i + %i = %i %s```" %(amount,hit_dice,con*amount,s,hd_rolls))
             qtd_hd -= amount  # consume n hit dices
             data[GetData(userID, data)+12] = qtd_hd
@@ -381,7 +367,6 @@ async def on_message(message):
             args = message.content.lower().split(' ')
             damage = int(args[1])
             hp = data[GetData(userID, data)+10]
-            print(hp)
             hp -= damage#take damage
             await client.send_message(message.channel, "```You took %i hit points. Don't you have a shield?```" %(damage))
             if hp <= 0:#unconcious
@@ -392,7 +377,6 @@ async def on_message(message):
 
         else:
             await client.send_message(message.channel, "```Error!Data not setted```")
-        print(hp)
     if message.content.lower().startswith('-lr'):  # long rest]
         if data:
             userID = message.author.id
@@ -401,7 +385,6 @@ async def on_message(message):
             qtd_hd = data[GetData(userID, data)+12]
             qtd_hd_max = data[GetData(userID, data)+11]
             hd = int(qtd_hd_max/2)
-            print(hd) #regain half of max amount of hit dices
             if hd == 0: #to a minimum of 1
                 hd = 1  # hit dice regained after finishing a long rest
             hp = hp_max #restore all hp
@@ -417,12 +400,21 @@ async def on_message(message):
         if data:
             userID = message.author.id
             level = data[GetData(userID, data)+1]
-            level += 1
+            hp_max = data[GetData(userID, data)+9]
+            qtd_hd_max = data[GetData(userID, data)+11]
+            hit_dice = data[GetData(userID, data)+13]) 
+            con = data[GetData(userID, data)+14])
+            roll = random.randint(1,hit_dice) + con
+            hp_max += roll
+            level += 1 con
+            qtd_hd_max += 1
             if level > 20:
                 level = 20
             data[GetData(userID, data)+1] = level
-
-            await client.send_message(message.channel, "```Level up! Great news Dovakhin!```")
+            data[GetData(userID, data)+9] = hp_max
+            data[GetData(userID, data)+11] = qtd_hd_max
+            data[GetData(userID, data)+13]) = hit_dice
+            await client.send_message(message.channel, "```Level up! Great news Dovakhin!You gained %i hit points, so you´re new max HP is %i```"%(roll,hp_max))
         else:
             await client.send_message(message.channel, "```Error!Data not setted```")
 
@@ -468,9 +460,7 @@ async def on_message(message):
             else:
                 await client.send_message(message.author, "DM. The stats are: ")
                 i =  1 #just to help in the iteration, the element data[0] is the dm user
-                print(data)
                 while i < len(data) - 1: #Get groups of 18 elements for each player
-                    print("oi")
                     user = data[i]
                     user = '<@'+str(user)+'>' 
                     level = data[i+1]
